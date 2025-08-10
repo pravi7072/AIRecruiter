@@ -75,7 +75,7 @@ const SignIn = () => {
                         <a href="#" className="text-blue-600 hover:underline">Forgot Password?</a>
                     </div>
 
-                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white text-md font-semibold">
+                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white text-md font-semibold cursor-pointer">
                         <LogIn size={18} className="mr-2" />
                         Login
                     </Button>
@@ -86,7 +86,7 @@ const SignIn = () => {
                 <Button
                     variant="outline"
                     onClick={handleGoogleLogin}
-                    className="w-full border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2"
+                    className="w-full border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2 cursor-pointer"
                 >
                     <Chrome size={20} />
                     Login with Google

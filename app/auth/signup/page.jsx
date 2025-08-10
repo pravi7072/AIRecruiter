@@ -119,7 +119,7 @@ const Signup = () => {
 
         <Button
           variant="outline"
-          className="w-full border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2"
+          className="w-full border-gray-300 hover:border-gray-400 flex items-center justify-center gap-2 cursor-pointer"
           onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
         >
           <Chrome size={20} />
