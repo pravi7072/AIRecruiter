@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate --schema=app/db/prisma/schema.prisma",
+    "migrate": "prisma migrate dev --schema=app/db/prisma/schema.prisma",
+    "migrate:deploy": "prisma migrate deploy --schema=app/db/prisma/schema.prisma",
+    "generate": "prisma generate --schema=app/db/prisma/schema.prisma",
     "lint": "next lint"
   },
   "dependencies": {
