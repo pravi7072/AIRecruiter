@@ -8,6 +8,7 @@ export default function Verify() {
   const token = searchParams.get("token");
   const [message, setMessage] = useState("Verifying...");
   const router = useRouter();
+  
 
   useEffect(() => {
     const verifyEmail = async () => {
