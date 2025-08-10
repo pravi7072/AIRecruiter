@@ -1,0 +1,24 @@
+
+<svg width="300" height="80" viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe; stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe; stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- AI Symbol -->
+  <g transform="translate(10, 15)">
+    <circle cx="20" cy="20" r="20" fill="url(#grad)" />
+    <text x="10" y="26" font-family="Arial, sans-serif" font-size="18" fill="white" font-weight="bold">AI</text>
+  </g>
+
+  <!-- Text: AiRecruiter -->
+  <text x="70" y="40" font-family="Segoe UI, sans-serif" font-size="28" font-weight="600" fill="#2C3E50">
+    Ai
+    <tspan fill="url(#grad)">Recruiter</tspan>
+  </text>
+
+  <!-- Accent Line -->
+  <line x1="70" y1="45" x2="230" y2="45" stroke="url(#grad)" stroke-width="3" stroke-linecap="round" />
+</svg>
