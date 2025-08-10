@@ -1,153 +1,158 @@
 # Smart Interview App
+# AIRecruiter
 
-Smart Interview App is an AI-powered recruitment platform that streamlines the interview process for both candidates and recruiters. It leverages artificial intelligence to automate scheduling, evaluate candidates, and provide actionable feedback, making hiring more efficient and effective.
+AIRecruiter is an AI-powered recruitment assistant platform that streamlines candidate evaluation by conducting voice-based interviews, generating structured feedback, and maintaining conversation logs. It integrates Vapi AI for real-time voice conversations, Deepgram for transcription, and OpenAI GPT for intelligent feedback generation.
 
 ## Table of Contents
 
+- [Overview](#overview)
 - [Features](#features)
-- [Demo](#demo)
 - [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Testing](#testing)
-- [Contributing](#contributing)
+- [Environment Variables](#environment-variables)
+- [Setup & Installation](#setup--installation)
+- [Running the Project](#running-the-project)
+- [How It Works](#how-it-works)
+- [API & SDK Integration](#api--sdk-integration)
+- [Notes & Recommendations](#notes--recommendations)
 - [License](#license)
-- [Contact](#contact)
+
+## Overview
+
+AIRecruiter automates the first stage of candidate interviews. It provides a voice-based AI interviewer that can:
+
+- Greet candidates and explain the process.
+- Ask predefined or dynamic technical/HR questions.
+- Transcribe answers in real time.
+- Generate AI-driven interview summaries and feedback.
+- Save conversation history for future review.
+
+The goal is to reduce human effort in screening candidates while maintaining structured, unbiased, and efficient evaluation.
 
 ## Features
 
-- **Automated Interview Scheduling:** Easily set up and manage interviews with calendar integration.
-- **AI-Driven Candidate Evaluation:** Objective scoring and analysis based on candidate responses.
-- **Real-Time Feedback and Scoring:** Instant feedback for candidates and recruiters.
-- **Customizable Interview Templates:** Create and reuse interview formats tailored to your needs.
-- **Secure Data Management:** All candidate and interview data is securely stored and managed.
-- **Role-Based Access:** Separate dashboards and permissions for recruiters and candidates.
-- **Analytics Dashboard:** Visualize hiring metrics and candidate performance.
-- **Notifications:** Email and in-app notifications for interview updates.
-
-## Demo
-
-A live demo is available at: [https://smart-interview-app-demo.example.com](https://smart-interview-app-demo.example.com)
+- 🎙 **Real-time voice interview via Vapi AI**
+- ✍ **Instant transcription with Deepgram**
+- 🤖 **AI-powered question & feedback generation using GPT models**
+- 📜 **Structured conversation logs for later review**
+- 🌐 **Modern web UI built with Next.js + Tailwind CSS**
+- 🛠 **Configurable interview topics (e.g., machine learning engineer, frontend developer, etc.)**
 
 ## Tech Stack
 
-- **Frontend:** React, Redux, Material-UI
-- **Backend:** Node.js, Express
-- **Database:** MongoDB
-- **AI Services:** OpenAI API (for candidate evaluation)
-- **Authentication:** JWT, OAuth2 (Google, LinkedIn)
-- **Deployment:** Docker, AWS/GCP/Azure
+**Frontend**
+- Next.js (React framework)
+- Tailwind CSS for styling
+- Shadcn/UI for UI components
+- Custom React Hooks (`useVapi`) for Vapi AI SDK integration
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v14 or higher)
-- npm or yarn
-- MongoDB (local or cloud instance)
-- OpenAI API key (for AI evaluation features)
-
-### Installation
-
-```bash
-git clone https://github.com/yourusername/smart-interview-app.git
-cd smart-interview-app
-npm install
-```
-
-### Environment Setup
-
-Create a `.env` file in the root directory with the following variables:
-
-```env
-REACT_APP_API_URL=http://localhost:5000
-OPENAI_API_KEY=your_openai_api_key
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-```
-
-### Running the App
-
-Start the backend server:
-
-```bash
-npm run server
-```
-
-Start the frontend:
-
-```bash
-npm start
-```
-
-The app will be available at [http://localhost:3000](http://localhost:3000).
+**Backend / AI Services**
+- Vapi AI Web SDK — Real-time AI voice conversation engine
+- Deepgram — Real-time transcription
+- OpenAI GPT — AI-generated responses & summaries
 
 ## Project Structure
 
 ```
-smart-interview-app/
-├── public/
+AIRecruiter-master/
+├── public/                  # Static assets
 ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── utils/
-│   ├── services/
-│   ├── store/
-│   └── App.js
-├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   └── server.js
-├── .env
+│   ├── app/
+│   │   ├── interview/       # Interview page & logic
+│   │   └── page.tsx         # Landing page
+│   ├── components/          # UI components
+│   ├── hooks/
+│   │   └── useVapi.ts       # Custom hook for Vapi integration
+│   ├── context/
+│   │   └── InterviewContext.tsx  # Context for managing interview state
+│   └── styles/
+├── .env.example             # Example environment file (create .env.local)
 ├── package.json
 └── README.md
 ```
 
-## Usage
+## Environment Variables
 
-1. **Register or Log In:** Sign up as a recruiter or candidate.
-2. **Set Up Interviews:** Recruiters can schedule interviews and invite candidates.
-3. **Join Interviews:** Candidates join scheduled interviews via the dashboard.
-4. **AI Evaluation:** After the interview, receive AI-generated feedback and reports.
-5. **Review Analytics:** Recruiters can analyze candidate performance and hiring metrics.
+Create a `.env.local` in the root directory with:
 
-## Configuration
-
-- **Custom Interview Templates:** Edit or add templates in the admin dashboard.
-- **User Roles:** Assign roles (recruiter/candidate) during registration or via admin panel.
-- **Email Notifications:** Configure SMTP settings in `.env` for email notifications.
-
-## Testing
-
-Run unit and integration tests:
-
-```bash
-npm test
+```env
+NEXT_PUBLIC_VAPI_API_KEY=your_vapi_api_key
+NEXT_PUBLIC_VAPI_ASSISTANT_ID=your_vapi_assistant_id
+NEXT_PUBLIC_DEEPGRAM_API_KEY=your_deepgram_key
+NEXT_PUBLIC_OPENAI_API_KEY=your_openai_key
 ```
 
-## Contributing
+**Notes:**
+- `NEXT_PUBLIC_` prefix is required for frontend access.
+- Get keys from:
+    - Vapi AI dashboard (API key & assistant ID)
+    - Deepgram console
+    - OpenAI dashboard
 
-Contributions are welcome! Please:
+## Setup & Installation
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
+Clone the repository:
 
-Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and ensure your code passes all tests.
+```bash
+git clone https://github.com/yourusername/AIRecruiter.git
+cd AIRecruiter-master
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Setup environment variables:
+
+```bash
+cp .env.example .env.local
+# Fill in your API keys in .env.local
+```
+
+## Running the Project
+
+**Development mode:**
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000).
+
+**Build for production:**
+
+```bash
+npm run build
+npm start
+```
+
+## How It Works
+
+1. **Landing Page** — Candidate chooses an interview topic (e.g., "Machine Learning Engineer").
+2. **Interview Page** —
+     - Starts Vapi AI voice conversation with configured assistant.
+     - Deepgram transcribes candidate’s answers in real-time.
+     - OpenAI processes transcripts to generate follow-up questions and feedback.
+3. **Post-interview** —
+     - Conversation logs and AI feedback displayed to interviewer.
+     - (Optional) Save results to a database.
+
+## API & SDK Integration
+
+- **Vapi AI**: Handles voice streaming between candidate and AI. Configured in `useVapi.ts` with API key & assistant ID.
+- **Deepgram**: Provides speech-to-text transcription. Integrated via Vapi AI’s transcription pipeline.
+- **OpenAI GPT**: Generates interview questions, summaries, and evaluations. Called from within the interview session after transcript chunks are received.
+
+## Notes & Recommendations
+
+- ✅ Add persistent storage (Supabase, MongoDB, etc.) to save interview history beyond current session.
+- ⚠ API keys are sensitive — never commit `.env.local` to source control.
+- 📈 You can add analytics for average interview length, completion rates, etc.
+- 🎯 Customizable interview flows — you can add HR, coding, or behavioral question sets.
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
-## Contact
-
-For questions, support, or feature requests, please contact [your.email@example.com](mailto:your.email@example.com).
-
----
-
-*This project is maintained by [yourusername](https://github.com/yourusername). Contributions and feedback are highly appreciated!*
+This project is licensed under the MIT License.  
+See the [LICENSE](LICENSE) file for details.
