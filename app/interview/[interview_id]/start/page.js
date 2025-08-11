@@ -4,7 +4,6 @@ import { Mic, Phone, Timer } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
 import Vapi from "@vapi-ai/web";
-import { Alert } from "./_component/Alert";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 
@@ -13,19 +12,20 @@ function Interview() {
   const { interview_id } = useParams();
   const router = useRouter();
 
-  // --- States
+  // States
   const [activeSpeaker, setActiveSpeaker] = useState(null);
   const [callEnded, setCallEnded] = useState(false);
   const [conversation, setConversation] = useState([]);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [isEnding, setIsEnding] = useState(false); // Track if ending call is in progress
+  const [isEnding, setIsEnding] = useState(false);
+  const [showConfirmEnd, setShowConfirmEnd] = useState(false);
 
-  // --- Refs
+  // Refs
   const timerRef = useRef(null);
   const vapiRef = useRef(null);
-  const isStartedRef = useRef(false); // Flag to guard start()
+  const isStartedRef = useRef(false);
 
-  // --- Format time
+  // Format time
   const formatTime = (seconds) => {
     const hrs = String(Math.floor(seconds / 3600)).padStart(2, "0");
     const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
@@ -33,12 +33,11 @@ function Interview() {
     return `${hrs}:${mins}:${secs}`;
   };
 
-  // --- Initialize Vapi once
+  // Initialize Vapi
   useEffect(() => {
     if (!vapiRef.current) {
       vapiRef.current = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY);
     }
-
     return () => {
       if (vapiRef.current) {
         vapiRef.current.stop();
@@ -48,10 +47,10 @@ function Interview() {
     };
   }, []);
 
-  // --- Start call only once when interviewInfo is ready and not already started
+  // Start call
   const startCall = useCallback(() => {
     if (!vapiRef.current || !interviewInfo) return;
-    if (isStartedRef.current) return; // Prevent duplicate start
+    if (isStartedRef.current) return;
 
     const questionList = interviewInfo?.interviewData?.questions?.join(", ") || "";
 
@@ -81,14 +80,25 @@ Questions: ${questionList}`,
     };
 
     vapiRef.current.start(assistantOptions);
-    isStartedRef.current = true; // Mark started
-
-    timerRef.current = setInterval(() => {
-      setElapsedTime((prev) => prev + 1);
-    }, 1000);
+    isStartedRef.current = true;
   }, [interviewInfo]);
 
-  // --- Setup event handlers once
+  // Timer lifecycle — runs while call active
+  useEffect(() => {
+    if (!callEnded && isStartedRef.current) {
+      // Start timer
+      timerRef.current = setInterval(() => {
+        setElapsedTime((prev) => prev + 1);
+      }, 1000);
+    }
+    // Cleanup
+    return () => {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    };
+  }, [callEnded]);
+
+  // Event handlers
   useEffect(() => {
     const vapi = vapiRef.current;
     if (!vapi) return;
@@ -98,19 +108,19 @@ Questions: ${questionList}`,
     const onCallStart = () => {
       console.log("Call started");
     };
+
     const onCallEnd = () => {
       if (!callEnded) {
         console.log("Call ended");
         setCallEnded(true);
         setActiveSpeaker(null);
         clearInterval(timerRef.current);
-        isStartedRef.current = false; // Reset start flag to allow restart if needed
-        setIsEnding(false); // End call loading complete!
-
-        // Navigate to completed page after call ends
+        isStartedRef.current = false;
+        setIsEnding(false);
         router.push(`/interview/${interview_id}/completed`);
       }
     };
+
     const onError = (error) => {
       if (error?.errorMsg === "Meeting has ended") {
         console.log("Call ended cleanly:", error.errorMsg);
@@ -118,6 +128,7 @@ Questions: ${questionList}`,
         console.error("Vapi error:", error);
       }
     };
+
     const onMessage = (message) => {
       if (message.type === "transcript") {
         const text = message.transcript || message.text || "";
@@ -148,24 +159,23 @@ Questions: ${questionList}`,
     };
   }, [callEnded, router, interview_id]);
 
-  // --- Start call when interviewInfo is ready
+  // Auto start
   useEffect(() => {
     if (interviewInfo) {
       startCall();
     }
   }, [interviewInfo, startCall]);
 
-  // --- Stop interview (end call)
+  // Stop call
   const stopInterview = () => {
     if (vapiRef.current && isStartedRef.current && !isEnding) {
-      setIsEnding(true); // Show loading and disable button
-      vapiRef.current.stop(); // Triggers "call-end" event
+      setIsEnding(true);
+      vapiRef.current.stop();
       clearInterval(timerRef.current);
-      // isStartedRef.current reset in onCallEnd
     }
   };
 
-  // --- Generate feedback after call ends
+  // Feedback after end
   const GenerateFeedback = useCallback(async () => {
     try {
       const filteredConversation = conversation.filter(
@@ -181,9 +191,7 @@ Questions: ${questionList}`,
         email: interviewInfo.email,
         interviewId: interview_id,
       };
-      console.log("Sending to backend:", payload);
-      const result = await axios.post("/api/ai-feedback", payload);
-      console.log("Feedback received:", result.data);
+      await axios.post("/api/ai-feedback", payload);
     } catch (error) {
       console.error("Failed to get feedback:", error);
     }
@@ -205,7 +213,9 @@ Questions: ${questionList}`,
         </span>
       </h2>
 
+      {/* Speakers */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-5">
+        {/* AI */}
         <div
           className={`bg-white h-[400px] rounded-lg flex justify-center items-center flex-col gap-3 transition-all duration-300 ${
             activeSpeaker === "ai" ? "ring-4 ring-blue-400 shadow-lg" : ""
@@ -220,6 +230,7 @@ Questions: ${questionList}`,
           />
           <h2>AI Recruiter</h2>
         </div>
+        {/* User */}
         <div
           className={`bg-white h-[400px] rounded-lg flex justify-center items-center flex-col gap-3 transition-all duration-300 ${
             activeSpeaker === "user" ? "ring-4 ring-green-400 shadow-lg" : ""
@@ -232,31 +243,60 @@ Questions: ${questionList}`,
         </div>
       </div>
 
+      {/* Controls */}
       <div className="flex items-center justify-center gap-5 mt-3">
-        <Alert stopInterview={stopInterview}>
-          <Phone
-            className={`h-12 w-12 p-3 rounded-full cursor-pointer ${
-              isEnding || callEnded ? "bg-gray-400 text-gray-700 cursor-not-allowed" : "bg-red-500 text-white"
-            }`}
-            onClick={() => {
-              if (!isEnding && !callEnded) stopInterview();
-            }}
-            aria-disabled={isEnding || callEnded}
-            role="button"
-            tabIndex={isEnding || callEnded ? -1 : 0}
-            title={isEnding ? "Ending call, please wait..." : "End Call"}
-          />
-        </Alert>
+        <Phone
+          className={`h-12 w-12 p-3 rounded-full cursor-pointer ${
+            isEnding || callEnded
+              ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+              : "bg-red-500 text-white"
+          }`}
+          onClick={() => {
+            if (!isEnding && !callEnded) setShowConfirmEnd(true);
+          }}
+          title={isEnding ? "Ending call, please wait..." : "End Call"}
+        />
         <Mic className="h-12 w-12 p-3 bg-gray-500 text-white rounded-full cursor-pointer" />
       </div>
 
       {isEnding && (
-        <p className="text-center mt-4 text-gray-500 font-semibold">Ending call, please wait...</p>
+        <p className="text-center mt-4 text-gray-500 font-semibold">
+          Ending call, please wait...
+        </p>
       )}
 
       <h2 className="text-sm text-gray-400 text-center mt-3">
         Interview in Progress...
       </h2>
+
+      {/* Confirmation Modal */}
+      {showConfirmEnd && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 className="font-semibold text-lg mb-4">End Interview?</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to end this interview now?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={() => setShowConfirmEnd(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded"
+                onClick={() => {
+                  setShowConfirmEnd(false);
+                  stopInterview();
+                }}
+              >
+                Yes, End
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
