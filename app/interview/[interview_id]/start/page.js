@@ -196,7 +196,7 @@ Questions: ${questionList}`,
   }, [callEnded, conversation, GenerateFeedback]);
 
   return (
-    <div className="p-20 lg:px-48 xl:px-56">
+    <div className="p-20 w-full lg:px-48 xl:px-56">
       <h2 className="font-bold text-xl flex justify-between">
         AI Interview Session
         <span className="flex gap-2 items-center">

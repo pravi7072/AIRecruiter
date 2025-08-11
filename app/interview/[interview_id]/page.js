@@ -56,7 +56,7 @@ function Interview() {
 
 
   return (
-    <div className="px-6 md:px-24 lg:px-44 xl:px-56 mt-16">
+    <div className="px-6 w-full md:px-24 lg:px-44 xl:px-56 mt-16">
       <div className="flex flex-col items-center justify-center rounded-lg bg-white p-7 lg:px-32 shadow-md">
         <Image
           src={"/AiRecruiter_Logo.svg"}

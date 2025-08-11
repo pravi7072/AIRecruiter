@@ -4,7 +4,7 @@ import { Home, ArrowRight } from 'lucide-react';
 
 const InterviewComplete = () => {
   return (
-    <div className="bg-gray-900 text-white font-sans antialiased flex flex-col min-h-screen">
+    <div className="text-white w-full font-sans antialiased flex flex-col min-h-screen">
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center justify-center space-y-8 py-16 px-4">
@@ -28,10 +28,10 @@ const InterviewComplete = () => {
         </div>
 
         {/* Heading */}
-        <h1 className="text-4xl font-bold text-center text-white">Interview Complete!</h1>
+        <h1 className="text-4xl font-bold text-center text-black">Interview Complete!</h1>
 
         {/* Subheading */}
-        <p className="text-lg text-gray-300 text-center max-w-xl">
+        <p className="text-lg text-gray-600 text-center max-w-xl">
           Thank you for participating in the AI-driven interview with AI Recruiter
         </p>
 
@@ -52,7 +52,7 @@ const InterviewComplete = () => {
         </div>
 
         {/* Next Steps */}
-        <div className="bg-gray-800 rounded-xl p-8 shadow-md w-full max-w-xl space-y-4">
+        <div className="rounded-xl p-8 shadow-md w-full max-w-xl space-y-4">
           <div className="flex items-center justify-center rounded-full bg-gray-700 w-12 h-12 mx-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"

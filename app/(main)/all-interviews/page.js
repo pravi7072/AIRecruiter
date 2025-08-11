@@ -39,7 +39,7 @@ export default function AllInterviews() {
       .finally(() => setLoading(false));
   }, []);
 
-  const getInterviewUrl = (id) => `${window.location.origin}/interview/${id}/show`;
+  const getInterviewUrl = (id) => `${window.location.origin}/interview/${id}`;
 
   const handleCopyLink = (id) => {
     const url = getInterviewUrl(id);
