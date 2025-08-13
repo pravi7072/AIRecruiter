@@ -285,7 +285,7 @@ Questions: ${questionList}`,
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-red-500 text-white rounded"
+                className="px-3 py-2 bg-red-500 text-white rounded"
                 onClick={() => {
                   setShowConfirmEnd(false);
                   stopInterview();
