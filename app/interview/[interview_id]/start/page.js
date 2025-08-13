@@ -44,6 +44,7 @@ function Interview() {
         vapiRef.current.removeAllListeners();
       }
       clearInterval(timerRef.current);
+      timerRef.current = null;
     };
   }, []);
 
@@ -81,22 +82,12 @@ Questions: ${questionList}`,
 
     vapiRef.current.start(assistantOptions);
     isStartedRef.current = true;
-  }, [interviewInfo]);
 
-  // Timer lifecycle — runs while call active
-  useEffect(() => {
-    if (!callEnded && isStartedRef.current) {
-      // Start timer
-      timerRef.current = setInterval(() => {
-        setElapsedTime((prev) => prev + 1);
-      }, 1000);
-    }
-    // Cleanup
-    return () => {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
-    };
-  }, [callEnded]);
+    // ✅ Start timer immediately when call starts
+    timerRef.current = setInterval(() => {
+      setElapsedTime((prev) => prev + 1);
+    }, 1000);
+  }, [interviewInfo]);
 
   // Event handlers
   useEffect(() => {
@@ -114,7 +105,8 @@ Questions: ${questionList}`,
         console.log("Call ended");
         setCallEnded(true);
         setActiveSpeaker(null);
-        clearInterval(timerRef.current);
+        clearInterval(timerRef.current); // ✅ stop timer
+        timerRef.current = null;
         isStartedRef.current = false;
         setIsEnding(false);
         router.push(`/interview/${interview_id}/completed`);
@@ -171,7 +163,8 @@ Questions: ${questionList}`,
     if (vapiRef.current && isStartedRef.current && !isEnding) {
       setIsEnding(true);
       vapiRef.current.stop();
-      clearInterval(timerRef.current);
+      clearInterval(timerRef.current); // ✅ stop timer here too
+      timerRef.current = null;
     }
   };
 
